@@ -48,13 +48,30 @@
       };
     },
     created() {
-      this.$axios.get('/v2/movie/in_theaters')
-          .then(response => this.showing = response.data.subjects.slice(0, 8));
-      this.$axios.get('/v2/movie/coming_soon')
-        .then(response => this.comming = response.data.subjects.slice(0, 8));
-      this.$axios.get('/v2/movie/top250')
-        .then(response => this.top = response.data.subjects.slice(0, 8));
+      this.getAllMovies();
     },
+    methods: {
+      getAllMovies() {
+        this.getShowingMovies();
+        this.getComingSoonMovies();
+        this.getTopMovies();
+      },
+      getShowingMovies() {
+        this.$axios.get('/v2/movie/in_theaters')
+            .then(response => this.showing = this.sliceMoviesFromResponse(response));
+      },
+      getComingSoonMovies() {
+        this.$axios.get('/v2/movie/coming_soon')
+            .then(response => this.comming = this.sliceMoviesFromResponse(response));
+      },
+      getTopMovies() {
+        this.$axios.get('/v2/movie/top250')
+            .then(response => this.top = this.sliceMoviesFromResponse(response));
+      },
+      sliceMoviesFromResponse(response, offset = 8) {
+          return response.data.subjects.slice(0, offset);
+      }
+    }
   };
 </script>
 
